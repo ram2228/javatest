@@ -32,13 +32,7 @@ public class EmployeeController {
 	
 	@Autowired
 	private EmployeeService employeeService;
-	
-	// get employee list
-	@GetMapping
-	public List<EmployeeDto> getEmployeeList() {
-		return employeeService.getEmployeeList();
-	}
-	
+
 	// create employee
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
@@ -46,23 +40,18 @@ public class EmployeeController {
 		//employeeDto.setId(0);
 		return employeeService.saveEmployee(employeeDto);
 	}
-	
+
+	// to get employee tax
+	@GetMapping("/{empId}")
+	public EmployeeTaxDto getEmployeeTax(@PathVariable int empId) {
+		return employeeService.getEmployeeTax(empId);
+	}
 	// update employee
 	@PutMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public EmployeeDto updateEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
 		return employeeService.saveEmployee(employeeDto);
 	}
-	
-	// get employee details
-	@GetMapping("/{empId}")
-	public EmployeeDto getEmployee(@PathVariable int empId) {
-		return employeeService.getEmployeeById(empId);
-	}
-	
-	// to get employee tax
-	@GetMapping("/tax/{empId}")
-	public EmployeeTaxDto getEmployeeTax(@PathVariable int empId) {
-		return employeeService.getEmployeeTax(empId);
-	}
+
+
 }

@@ -69,8 +69,8 @@ public class TaxServiceImpl implements TaxService {
 		final double totalSalary = 
 				(Math.round(employee.getSalary()/30) * diffDays) + (employee.getSalary() * diffMonths);
 		
-		//finding tax slabs  for employee salary
-		taxList = taxList.stream()
+		// commenting old code
+		/*taxList = taxList.stream()
 				.filter(t -> totalSalary >= t.getFromAmount())
 				.collect(Collectors.toList());
 		
@@ -90,6 +90,20 @@ public class TaxServiceImpl implements TaxService {
 					System.out.println("ELSE Tax = "+taxSlab.getToAmount()+" - "+taxSlab.getFromAmount()+" & Amount="+taxAmount);
 				}
 			}
+		}*/
+						
+		double taxAmount = 0;
+		System.out.println("total salary "+totalSalary);
+		//Calculate Tax slab wise
+		if (totalSalary > 0) {
+		    taxAmount = taxList.stream()
+		            .filter(taxSlab -> totalSalary > taxSlab.getFromAmount())
+		            .mapToDouble(taxSlab -> {
+		                double taxableAmount = Math.min(taxSlab.getToAmount(), totalSalary) - taxSlab.getFromAmount();
+		                return Math.round((taxableAmount * taxSlab.getTaxPercentage()) / 100);
+		            })
+		            .sum();
+		 
 		}
 		
 		
@@ -110,6 +124,8 @@ public class TaxServiceImpl implements TaxService {
 		
 		
 		employeeTaxDto.setEmployeeId(employee.getId());
+		employeeTaxDto.setFirstName(employee.getFirstName());
+		employeeTaxDto.setLastName(employee.getLastName());
 		employeeTaxDto.setTotalSalary(EmployeeConstant.ZERO_DECIMAL.format(totalSalary));
 		employeeTaxDto.setTaxDeduction(EmployeeConstant.ZERO_DECIMAL.format(taxAmount));
 		employeeTaxDto.setInHandSalary(EmployeeConstant.ZERO_DECIMAL.format(inHandSalary));
